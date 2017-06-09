@@ -10,22 +10,15 @@
     a {text-decoration: none; border-bottom: 1px solid; }
     * {box-sizing: border-box; }
     body {margin: 0; min-height: 100vh; display: flex; justify-content: center; }
-    .page {width: 40em; margin: 2em; border: 1px solid #ddd; padding: 0 1em; box-shadow: 3px 3px 6px hsla(0, 0%, 0%, 0.1); }
+    .page {width: 40em; margin: 2em; border: 1px solid #ddd; padding: 0 1em; box-shadow: 3px 3px 6px hsla(0, 0%, 0%, 0.1); position: relative;}
     ol>li {padding: .2em .5em; }
     ol>li:hover {background: #ddd; }
     ol>li .difficulty {float: right; }
-    .mtaobao{
-        position: relative;
-    }
-    .mtaobao>img{
-        display: none;
-    }
-    .mtaobao>a:hover~img{
-        display: unset;
-        position: absolute;
-        left: -330px;
-        top:-100px;
-    }
+    .mtaobao{position: relative; }
+    .mtaobao>img{display: none; }
+    .mtaobao>a:hover~img{display: unset; position: absolute; left: -330px; top:-100px; }
+    .my-info{position: absolute; top: 10px; right: 10px; }
+    .my-info>a{border: none; }
     </style>
 </head>
 
@@ -44,6 +37,9 @@
                 <img src="http://qr.liantu.com/api.php?text=https://xinx1n.github.io/demos/mtaobao/index.html" alt="手机扫码预览">
             </li>
     	</ol>
+        <div class="my-info">
+            Github: <a href="https://github.com/xinx1n">xinx1n</a>
+        </div>
     </div>
 </body>
 
