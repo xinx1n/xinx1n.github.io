@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<meta name="author" content="xinx1n">
+		<meta name="description" content="just logs">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>网页性能优化 &middot; 彩色的笔</title>
+		<link rel="shortcut icon" href="https://xinx1n.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://xinx1n.github.io/css/style.css">
+		<link rel="stylesheet" href="https://xinx1n.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://xinx1n.github.io/css/font-awesome.min.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://xinx1n.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://xinx1n.github.io/posts'>Archive</a>
+	<a href='https://xinx1n.github.io/tags'>Tags</a>
+	<a href='https://xinx1n.github.io/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        网页性能优化
+                    </h1>
+                    <h2 class="headline">
+                    Dec 29, 2017 18:12
+                    · 1812 words
+                    · 4 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://xinx1n.github.io/tags/web">web</a>
+                          
+                              <a href="https://xinx1n.github.io/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">性能优化</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#http-网络层面优化">HTTP、网络层面优化</a></li>
+<li><a href="#代码层面">代码层面</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<blockquote>
+<p>网页性能优化是一个工程学问题，理论上正确到实践中未必合适。网页性能优化要根据项目实际情况来应变，没有银弹。</p>
+</blockquote>
+
+<h2 id="http-网络层面优化">HTTP、网络层面优化</h2>
+
+<p><img src="http://osuthqa3a.bkt.clouddn.com/2017-12-29-15007263417841.jpg" alt="" />
+<img src="http://osuthqa3a.bkt.clouddn.com/2017-12-29-15007265233923.jpg" alt="" />
+<img src="http://osuthqa3a.bkt.clouddn.com/2017-12-29-15007265578338.jpg" alt="" />
+<img src="http://osuthqa3a.bkt.clouddn.com/2017-12-29-15007266030412.jpg" alt="" /></p>
+
+<p>上边 4 图分别是请求 www.zhihu.com 80 端口和 443 端口的 Timing 图情况，可以看出从键入网址到页面加载完成，主要经过以下几个阶段：</p>
+
+<ol>
+<li>查询 DNS（DNS lookup）</li>
+<li>初始化 TCP 链接（Initial connection）、https 还包括 SSL</li>
+<li>发送 http 请求（Request sent）</li>
+<li>等待服务器相应（Waiting）</li>
+<li>响应内容下载（Content Downloaded）</li>
+</ol>
+
+<p>所以优化网页性能也应该从减少以上几个阶段的时间入手，下边主要讨论前端所能涉及到的，非前端所能改变的不会有太多提及。</p>
+
+<p>首先是最直接减少以上 5 个阶段时间的方案（<strong>方案 A</strong>）：</p>
+
+<ol>
+<li>减少 DNS 查询时间：同一网页中不要使用过多域名下的资源</li>
+<li>减少 初始化 TCP 链接的时间，减少页面中资源的数量，比如合并 CSS、js，使用雪碧图等等</li>
+<li>减少发送 http 请求所需时间，这一方面主要是从减少请求内容入手，比如不滥用 cookies，该使用 localstorage 的时候就是用 localstorage</li>
+<li>减少等待服务器相应时间，这一方面主要是服务器响应速度问题，主要从服务器端来解决，服务器性能、服务器端代码性能、服务器网络等等，使用 CDN 是减少这一阶段时间的有效手段，一般来说北京用户访问北京的服务器总比访问美国的服务器要快得多。</li>
+<li>减少响应内容下载的时间，开启 gzip 压缩是一个有效的手段，4 中提到的 CDN 也是如此。</li>
+</ol>
+
+<p>在上边的方案中我没有考虑浏览器的并行下载能力，实际上浏览器是可以同时并行下载多个资源的，但是一般浏览器都会对同一个域名下并行下载的资源数量作出限制，一般每个域名允许并行下载的数量是 4-10 个（取决于浏览器）。那么考虑到利用浏览器的并行能力，还有以下几个点（<strong>方案 B</strong>）：</p>
+
+<ol>
+<li>拆分大的 CSS、js 等文件，这一点和上边的 2 中提到的方案是矛盾的，在一开始我就提到，网页性能优化是工程学问题，两权相害取其轻。</li>
+<li>为了解决浏览器对并行下载数量的限制，我们会在同一个页面中使用多个域名下的资源，这一点又和上边 1 中的方案是矛盾的。实际中往往是将图片、js、css 等静态内容放到单独的 CDN，这样静态文件 CDN 还没有 cookies，能够减少发送 http 请求的时间，也能优雅的在不同项目中实现资源复用，用户在打开你的其他网站时也不需要再次加载。</li>
+</ol>
+
+<p>还有一点是没有提到的，那就是缓存，直接从本地加载才是最快的。实际中往往会对 CSS、js、图片等内容设置很长的缓存时间，当文件内容变更时直接修改文件名，前端的工程化使得 xx-hash.js 这种方式变得很简单。对于一些公共的库（比如 jQuery）使用公共的 CDN （如 bootcdn）也是不错的方案，这样会使得即使用户是第一次打开你的网站也有很可能不需要再次请求。</p>
+
+<p>写到这里看起来有些乱，有些地方有矛盾，我也没有总结类似于雅虎军规类似的东西，还是那一句话，没有银弹。把握住根源，从网络层面的各个阶段来着手，根据项目具体情况具体分析，性能优化是需要实测的，看起来很合理的方案，实际中反而可能出现负面效果。充分利用开发者工具，如 Audits面板、Network 面板下的 Timing，他们作为参考让你能够容易发现拖后腿的环节，然后可以采取针对性的方案。
+<img src="http://osuthqa3a.bkt.clouddn.com/2017-12-29-15007310778765.jpg" alt="" /></p>
+
+<p>同时，技术是一直在进步的，优化方案也不会一成不变，以前感觉不错的方案，将来可能会变得无效；有副作用的方案，将来可能会变成最优解。比如 HTTP/2.0 的多路复用，多路复用允许同时通过单一的 HTTP/2 连接发起多重的请求-响应消息，那么方案 A 中的 2，合并文件来减少链接从而减少建立 TCP 连接的时间效果就不再明显，同时使用多个域名的 CDN 来破解浏览器并行数量的限制也就并非必要了。这也提醒我们，技术的进步可能比我们费心的优化有效百倍。</p>
+
+<h2 id="代码层面">代码层面</h2>
+
+<p>代码层面的优化方案主要有懒加载、动态加载、预加载等方案。</p>
+
+<ul>
+<li>懒加载是指在需要资源的时候才进行加载，触发某些条件才开始异步加载，常见的是图片懒加载，一般是图片进入或者快进入视区的时候才开始加载图片。懒加载能够减少请求数或延迟请求数，有效的减少服务器压力，同时也提升了用户的首屏加载速度。</li>
+<li>动态加载类似于懒加载，和懒加载的不同之处在于加载完首屏资源后就会自动加载其他资源，而不等待触发某些条件。看起来和懒加载极其相似，甚至也可以归类于触发条件为首屏资源加载完毕的懒加载。</li>
+<li>预加载和懒加载相反，会提前下载好资源，等需要的时候直接从缓存读取内容。比如需要翻页的内容，提前读取下一页甚至下 2 页的内容。预加载有时会增大服务器压力，换取更好的用户体验，可以使用户的操作得到最快的响应。</li>
+</ul>
+
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fxinx1n.github.io%2fposts%2f20171229%2f - %e7%bd%91%e9%a1%b5%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96 by @xinn1x"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'xinx1n'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+                <ul id="post-list" class="archive readmore">
+    <h3>read more</h3>
+
+    
+    
+    
+</ul>
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="#">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/xinx1n">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/xinn1x">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> xinx1n
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://xinx1n.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://xinx1n.github.io/js/main.js"></script>
+<script src="https://xinx1n.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>
