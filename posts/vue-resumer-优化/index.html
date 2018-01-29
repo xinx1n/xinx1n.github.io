@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<meta name="author" content="xinx1n">
+		<meta name="description" content="just logs">
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>vue-resumer 优化 &middot; 彩色的笔</title>
+		<link rel="shortcut icon" href="https://xinx1n.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://xinx1n.github.io/css/style.css">
+		<link rel="stylesheet" href="https://xinx1n.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://xinx1n.github.io/css/font-awesome.min.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://xinx1n.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://xinx1n.github.io/posts'>Archive</a>
+	<a href='https://xinx1n.github.io/tags'>Tags</a>
+	<a href='https://xinx1n.github.io/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        vue-resumer 优化
+                    </h1>
+                    <h2 class="headline">
+                    Jan 29, 2018 11:54
+                    · 657 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://xinx1n.github.io/tags/web">web</a>
+                          
+                              <a href="https://xinx1n.github.io/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">性能优化</a>
+                          
+                              <a href="https://xinx1n.github.io/tags/webpack">webpack</a>
+                          
+                              <a href="https://xinx1n.github.io/tags/element-ui">element-ui</a>
+                          
+                              <a href="https://xinx1n.github.io/tags/vue">vue</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#问题-vendor-文件太大">问题：vendor 文件太大</a></li>
+<li><a href="#analyz-图">analyz 图</a></li>
+<li><a href="#效果图">效果图</a></li>
+<li><a href="#进一步优化">进一步优化</a></li>
+<li><a href="#参考文章">参考文章</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>vue-resumer 是我学习 vue 的一个练手项目: <a href="https://github.com/xinx1n/vue-resumer">项目地址</a> <a href="https://xinx1n.github.io/vue-resumer/">预览地址</a></p>
+
+<h2 id="问题-vendor-文件太大">问题：vendor 文件太大</h2>
+
+<ol>
+<li>首先尝试了 vue 内置好的懒加载，然后发现 懒加载只是懒加载 .vue，实现按需分割，并不影响 vendor 的大小，只有当项目页面较多、使用 vue-router 的时候，采用懒加载，会自动帮忙分割文件，将一个 app.js 分割成多个。而 vendor 是 commonsChunk 将各个组件公用的第三方库打包到一起生成的文件。</li>
+<li>然后用 vue-cli 内置的 webpack-bundle-analyzer 插件分析了太大的原因，发现是 elementUI 的问题，通过查找，发现 elementUI 是支持按需加载的，按照文档，引入了一个 babel 插件，然后代码改成按需加载，其实不引入插件也是可以的，但是在 import 的时候比较麻烦，能懒就懒……</li>
+<li>build 以后发现 vendor 从 698k 降到 329k</li>
+<li>后来又按照自己下边写的进一步提升的方法将 leancloud-storage 改为用 cdn 引入 vendor 降为 185kb</li>
+</ol>
+
+<h2 id="analyz-图">analyz 图</h2>
+
+<ul>
+<li>element ui 按需加载前
+<img src="http://osuthqa3a.bkt.clouddn.com/2018-01-29-15039766267056.jpg" alt="" /></li>
+<li>element ui 按需加载后
+<img src="http://osuthqa3a.bkt.clouddn.com/2018-01-29-15039766225412.jpg" alt="" /></li>
+<li>leancloud-storage 改为引公共 CDN
+<img src="http://osuthqa3a.bkt.clouddn.com/2018-01-29-15039891251522.jpg" alt="" /></li>
+</ul>
+
+<h2 id="效果图">效果图</h2>
+
+<ul>
+<li>element ui 按需加载前
+<img src="http://osuthqa3a.bkt.clouddn.com/2018-01-29-15039764747607.jpg" alt="" /></li>
+<li>element ui 按需加载后
+<img src="http://osuthqa3a.bkt.clouddn.com/2018-01-29-15039764272002.jpg" alt="" /></li>
+
+<li><p>在然后将 leancloud-storage 改为用 CDN 引入
+<img src="http://osuthqa3a.bkt.clouddn.com/2018-01-29-15039889822052.jpg" alt="" /></p></li>
+
+<li><p>第一次尝试 .vue 文件懒加载的效果，只是分割 app.js，当项目较大的时候可以使用这种方案优化
+<img src="http://osuthqa3a.bkt.clouddn.com/2018-01-29-15039765081136.jpg" alt="" /></p>
+
+<h2 id="进一步优化">进一步优化</h2></li>
+
+<li><p>如果要进一步优化我首先想到的是 Scope Hoisting 和 Tree Shaking，这两个功能听说很久了，但一直没用过，但我感觉提升不会太大。由于 Scope Hoisting 是 webpack 3.0 以后才添加的功能，而 vue-cli 的 webpack 还未升级到 3.0，因而并没有尝试。</p></li>
+
+<li><p>另外想到的是把 leancloud-storage 这类不支持按需加载、Tree Shaking的第三方库改用 CDN，这样体积能小很多，并且知名 CDN 的加载速度比我演示用的 GitHub 速度快多了（这种方法已经应用）</p>
+
+<h2 id="参考文章">参考文章</h2></li>
+
+<li><p><a href="http://www.jeffjade.com/2017/08/06/124-webpack-packge-optimization-for-volume/">Webpack 打包优化之体积篇</a></p></li>
+
+<li><p><a href="https://juejin.im/entry/5896d13d128fe10058e2a3c5">Vue-Cli + ElementUI 试水感受</a></p></li>
+
+<li><p><a href="http://orangexc.xyz/2017/05/15/Vue-project-optimization/">浅谈 Vue 项目优化</a></p></li>
+
+<li><p><a href="http://jeffjade.com/2017/08/12/125-webpack-package-optimization-for-speed/">Webpack 打包优化之速度篇&ndash;木有用到，但值得学习</a></p></li>
+
+<li><p><a href="https://zhuanlan.zhihu.com/p/27980441">Webpack 3 的新功能：Scope Hoisting&ndash;虽然没用到，但是了解下 scop hoisting 和 tree shaking</a></p></li>
+</ul>
+
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fxinx1n.github.io%2fposts%2fvue-resumer-%25E4%25BC%2598%25E5%258C%2596%2f - vue-resumer%20%e4%bc%98%e5%8c%96 by @xinn1x"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'xinx1n'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+                <ul id="post-list" class="archive readmore">
+    <h3>read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/posts/20171229/">网页性能优化<aside class="dates">Dec 29 2017</aside></a>
+        </li>
+    
+</ul>
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="#">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/xinx1n">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/xinn1x">
+        <i class="fa fa-twitter-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> xinx1n
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://xinx1n.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://xinx1n.github.io/js/main.js"></script>
+<script src="https://xinx1n.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>
