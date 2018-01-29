@@ -1,6 +1,6 @@
 li {
   list-style-position: unset;
 }
-.post h1,.post h2,.post h3,.post h4,.post h5{
+.post h1,.post h2,.post h3,.post h4,.post h5,.post p{
   margin-bottom: 10px;
 }
