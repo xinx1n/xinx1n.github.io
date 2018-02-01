@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on 彩色的笔</title>
+    <title>彩色的笔</title>
     <link>https://xinx1n.github.io/tags/</link>
-    <description>Recent content in Tags on 彩色的笔</description>
+    <description>Recent content on 彩色的笔</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <lastBuildDate>Mon, 29 Jan 2018 12:42:41 +0800</lastBuildDate>
@@ -12,57 +12,12 @@
     
     
     <item>
-      <title></title>
-      <link>https://xinx1n.github.io/tags/</link>
+      <title>bash 中 1 2 ，/dev/null，2&gt;&amp;1 都是什么意思</title>
+      <link>https://xinx1n.github.io/posts/some-tips-about-bash-scripts/</link>
       <pubDate>Mon, 29 Jan 2018 12:42:41 +0800</pubDate>
       
-      <guid>https://xinx1n.github.io/tags/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Element Ui</title>
-      <link>https://xinx1n.github.io/tags/element-ui/</link>
-      <pubDate>Mon, 29 Jan 2018 11:54:26 +0800</pubDate>
-      
-      <guid>https://xinx1n.github.io/tags/element-ui/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Vue</title>
-      <link>https://xinx1n.github.io/tags/vue/</link>
-      <pubDate>Mon, 29 Jan 2018 11:54:26 +0800</pubDate>
-      
-      <guid>https://xinx1n.github.io/tags/vue/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Web</title>
-      <link>https://xinx1n.github.io/tags/web/</link>
-      <pubDate>Mon, 29 Jan 2018 11:54:26 +0800</pubDate>
-      
-      <guid>https://xinx1n.github.io/tags/web/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Webpack</title>
-      <link>https://xinx1n.github.io/tags/webpack/</link>
-      <pubDate>Mon, 29 Jan 2018 11:54:26 +0800</pubDate>
-      
-      <guid>https://xinx1n.github.io/tags/webpack/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>性能优化</title>
-      <link>https://xinx1n.github.io/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</link>
-      <pubDate>Mon, 29 Jan 2018 11:54:26 +0800</pubDate>
-      
-      <guid>https://xinx1n.github.io/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</guid>
-      <description></description>
+      <guid>https://xinx1n.github.io/posts/some-tips-about-bash-scripts/</guid>
+      <description>在 bash 中，1 代表标准输出，2 代表错误输出，那么2&amp;gt;/dev/null代表把错误输出重定向到空设备文件。关于/dev/null见wiki 还</description>
     </item>
     
   </channel>
