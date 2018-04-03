@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>About on 彩色的笔</title>
-    <link>https://xinx1n.github.io/about/</link>
+    <link>/about/</link>
     <description>Recent content in About on 彩色的笔</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <lastBuildDate>Fri, 29 Dec 2017 18:12:15 +0800</lastBuildDate>
     
-	<atom:link href="https://xinx1n.github.io/about/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/about/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>
